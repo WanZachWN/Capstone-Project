@@ -101,7 +101,7 @@ void YoloNetwork::CurrentFrame(Mat cap)
 			// Get the value and location of the maximum score
 			minMaxLoc(scores, 0, &maxVal, 0, &classIdPoint);
 			float objPrediction = data[4];
-			if(objPrediction >= this-> confThreshold)
+			if(objPrediction >= this->confThreshold)
 			{
 				int centerX = (int)(data[0] * cap.cols);
 				int centerY = (int)(data[1] * cap.rows);
