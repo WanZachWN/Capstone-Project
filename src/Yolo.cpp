@@ -94,8 +94,8 @@ int main(int argc, const char *argv[])
 		return 0;
 	}
 	//YOLO files required to do object detection
-	string configYolo = "cfg/yolov3-tiny.cfg";	//YOLO configuration file
-	string weightsYolo = "yolov3-tiny.weights";	//YOLO weights
+	string configYolo = "yolov3.cfg";	//YOLO configuration file
+	string weightsYolo = "yolov3.weights";	//YOLO weights
 	string coconamesYolo = "coco.names";	//YOLO classes names
 	
 	//YOLO class objects
