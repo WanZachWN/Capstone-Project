@@ -64,7 +64,7 @@ int main(int argc, const char *argv[])
 	char fileType[5];	//file type jpg, jpeg, etc is saved here
 	string str, outputFile;	//str to save image file entered by user
 				//outputFile is to save final image name ex: person_output.jpg
-	VideoCapture cap(pipeline, CAP_GSTREAMER});	//for webcam use
+	VideoCapture cap(pipeline, CAP_GSTREAMER);	//for webcam use
 	Mat frame;	//current frame
 	TickMeter tm;
     char c;
