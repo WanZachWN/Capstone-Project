@@ -145,6 +145,7 @@ int main(int argc, const char *argv[])
             break;
         }
     }
-	
+	cap.release;
+	destroyAllWindows();
 	return 0;
 }
