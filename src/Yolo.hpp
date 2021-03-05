@@ -2,7 +2,7 @@
 #include <fstream>
 
 //opencv libraries
-#include <opencv2/dnn.hpp>
+#include <opencv2/dnn/dnn.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/opencv.hpp>
@@ -59,8 +59,8 @@ YoloNetwork::YoloNetwork(const string configFile, const string weightFile, const
 	}
 	//Load the network with the configuration file and weight file by YOLO
 	this->net = readNetFromDarknet(configFile, weightFile);
-	this->net.setPreferableBackend(DNN_BACKEND_DEFAULT);
-	this->net.setPreferableTarget(DNN_TARGET_CPU);
+	this->net.setPreferableBackend(DNN_BACKEND_CUDA);
+	this->net.setPreferableTarget(DNN_TARGET_CUDA);
 	
 	//get the names of unconnected output layers from the network
 	this->outputNames = this->net.getUnconnectedOutLayersNames();
