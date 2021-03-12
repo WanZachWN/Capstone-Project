@@ -142,3 +142,26 @@ vector<yoloClass> YoloNetwork::outputObject()
 }
 
 
+/********************************************************************************************************************
+*
+********************************************************************************************************************/
+float YoloNetwork::EuclideanS(struct yoloClass a)
+{
+    	//distance between two points
+   	float new_x = (a.x)^2;
+    	float new_y = (a.y)^2;
+
+    	//float euclidean = sqrt(new_x + new_y);
+	float euclidean = sqrt(new_x + new_y);
+	//cout << "distance pixel: " << euclidean << endl;
+
+    	float ratio = 3.916667/37.4299;
+	//cout << "ratio: " << ratio << endl;
+
+    	float distance = ratio * euclidean;
+	cout << "distance real: " << distance << endl;
+
+	//return distance;    
+	return distance;
+}
+
