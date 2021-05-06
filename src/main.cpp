@@ -20,6 +20,10 @@
 *
 * To run the program: ./main webcam
 *
+* To run i2c Camera: python3 i2c_camera.py
+*
+* To check i2c pins: i2cdetect -y -r 1
+*
 ********************************************************************************************************************/
 
 /********************************************************************************************************************
@@ -50,7 +54,7 @@ void DrawDetector(Mat &cap, struct yoloClass person)
 {	
 	//compliance is a flag whether the person is within social distance compliance
 	//If the flag is true, Indicate with a red dot
-	if(person.noncompliance == true)
+	/*if(person.noncompliance == true)
 	{
 		circle( cap, Point( person.x, person.y ), 3, Scalar(0, 0, 255), 2, 8 );
 	}
@@ -58,6 +62,17 @@ void DrawDetector(Mat &cap, struct yoloClass person)
 	else
 	{
 		circle( cap, Point( person.x, person.y ), 3, Scalar( 0, 255, 0), 2, 8 );
+	}*/
+	int top = person.y - person.height/2;
+	int left = person.x - person.width/2;
+	
+	if(person.noncompliance == true)
+	{
+		rectangle(cap, Rect(left, top, person.width, person.height), Scalar(0,255,0),2);
+	}
+	else
+	{
+		rectangle(cap, Rect(left, top, person.width, person.height), Scalar(0,0, 255),2);
 	}
 }
 
@@ -99,6 +114,7 @@ int main(int argc, const char *argv[])
 	char c;						//Character type to check if user ends the program
 	fstream ptrFile("number_people.txt");				//File pointer
 	char* num_people = new char[1];
+	fstream ptrFile2("compliance.txt");
 	
 	//try to open webcam
 	try{
@@ -133,9 +149,12 @@ int main(int argc, const char *argv[])
 	}
 	
 	//YOLO files required to do object detection
+	//string configYolo = "yolov3.cfg";	//YOLO configuration file
+	//string weightsYolo = "yolov3.weights";	//YOLO weights
 	string configYolo = "yolov3-tiny.cfg";	//YOLO configuration file
 	string weightsYolo = "yolov3-tiny.weights";	//YOLO weights
 	string coconamesYolo = "coco.names";	//YOLO classes names
+	int compliance = 0;
 	
 	//YOLO class objects
 	vector<yoloClass> objects;
@@ -177,7 +196,7 @@ int main(int argc, const char *argv[])
 		//Stop the time
 		tm.stop();
 		
-		//place average fps top left corner of window frame
+		//place average fps top left corner of window frame 
 		string label = format("%.2f fps", tm.getFPS());
 		putText(frame, label, Point(0, 10), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 255, 0));
 		
@@ -186,12 +205,20 @@ int main(int argc, const char *argv[])
 		
 		
 		ptrFile.open("number_people.txt", ifstream::out);
+		ptrFile2.open("compliance.txt", ifstream::out);
 		//send number of people
-		//cout << objects.size() << endl;
+		//cout << objects.size() << endl; 
 		//num_people = objects.size();
 		snprintf(num_people, sizeof(num_people), "%zu", objects.size());
-		cout << num_people << endl;
+		//cout << num_people << endl;
 		//ptrFile.write(num_people, sizeof(num_people));
+		compliance = yolo.GetCompliance();
+		ptrFile2 << compliance;
+		ptrFile2.close();
+		/*if(compliance == false)
+		{
+			num_people = num_people + 64;
+		}*/
 		ptrFile << num_people;
 		ptrFile.close();
 		

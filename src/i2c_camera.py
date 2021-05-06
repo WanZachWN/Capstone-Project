@@ -16,13 +16,18 @@ def isInt(value):
 
 while string != "exit":
 	f = open("number_people.txt", "r")
+	f2 = open("compliance.txt", "r");
+	string2 = f2.readline()
 	string = f.readline()
 	if(isInt(string) == True):
 		numb = int(string);
 		if isinstance(numb, int):
-			if numb <= 42:
-				if numb != numbold:
-					numbold = numb
+			if numb != numbold:
+				numbold = numb
+				numb2 = int(string2)
+				if isinstance(numb2, int):
+					if numb2 == 1:
+						numb = numb + 64;
 					bus.write_byte(addr, numb)
 					print(numb)
 	f.close()

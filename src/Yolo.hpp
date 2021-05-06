@@ -35,6 +35,8 @@ struct yoloClass
 {
 	int x;
 	int y;
+	int width;
+	int height;
 	bool noncompliance;
 };
 
@@ -52,6 +54,7 @@ class YoloNetwork
 		vector<string> outputNames;	//Vector string to store classes names for output names
 		vector<yoloClass> object;	//Vector type of yoloClass object variable
 		int countPerson;		//Int type of counter for current people in the frame
+		bool compliance;
 		
 	public:
 		YoloNetwork(const string configFile, const string weightFile,
@@ -60,7 +63,8 @@ class YoloNetwork
 		void CurrentFrame(Mat cap);					//Process current frame function
 		vector<yoloClass> getOutputObject();				//Return vector type of yoloClass
 		float Euclidean(struct yoloClass a, struct yoloClass b);	//Euclidean Distance Calculation
-		int getNumberPeople();						//Return number of people in the frame
+		int GetNumberPeople();						//Return number of people in the frame
+		bool GetCompliance();
 };
 
 /********************************************************************************************************************
@@ -97,6 +101,9 @@ YoloNetwork::YoloNetwork(const string configFile, const string weightFile, const
 	
 	//Get the last output layer names from YOLO
 	this->outputNames = this->net.getUnconnectedOutLayersNames();
+	
+	
+	this->compliance = true;
 }
 
 /********************************************************************************************************************
@@ -175,6 +182,8 @@ void YoloNetwork::CurrentFrame(Mat cap)
 			yoloClass class_object_struct;
 			class_object_struct.x = boundingBox[idx].x;
 			class_object_struct.y = boundingBox[idx].y;
+			class_object_struct.width = boundingBox[idx].width;
+			class_object_struct.height = boundingBox[idx].height;
 			this->object[i] = class_object_struct;
 			//this->countPerson++;
 		}
@@ -190,7 +199,7 @@ void YoloNetwork::CurrentFrame(Mat cap)
 		for(int y = x+1; y < object.size(); y++)
 		{
 			//If more than one person in the frame
-			if(object.size() != 1)
+			if(object.size() > 1)
 			{
 				/*
 				  Get the distance from the Euclidean function by passing two person data
@@ -206,6 +215,15 @@ void YoloNetwork::CurrentFrame(Mat cap)
 				{
 					object[x].noncompliance = true;
 					object[y].noncompliance = true;
+					//
+					this->compliance = true;
+				}
+				else
+				{
+					object[x].noncompliance = false;
+					object[y].noncompliance = false;
+					//
+					this->compliance = false;
 				}
 			}
 		}
@@ -242,11 +260,11 @@ float YoloNetwork::Euclidean(struct yoloClass a, struct yoloClass b)
 	  perform a division with the calculated euclidean.
 	  ratio = known distance / euclidean in pixel
 	*/
-    	float ratio = 24.9166/23.0651; // /23.0651
+    	float ratio = 3.916667/37.4299;
 
 	//The distance is scaled based on the ratio obtained
     	float distance = ratio * euclidean;
-    	//cout << "distance: " << distance << endl;
+    	cout << "distance: " << distance << endl;
     
 	return distance;	//Return the distance
 }
@@ -265,11 +283,21 @@ vector<yoloClass> YoloNetwork::getOutputObject()
 /********************************************************************************************************************
 * Number of People In The Current Frame Function
 ********************************************************************************************************************/
-int YoloNetwork::getNumberPeople()
+int YoloNetwork::GetNumberPeople()
 {
 	/*
 	  Return int type of current people in the frame
 	*/
 	return this->countPerson;
+}
+/********************************************************************************************************************
+* Number of People In The Current Frame Function
+********************************************************************************************************************/
+bool YoloNetwork::GetCompliance()
+{
+	/*
+	  Return int type of current people in the frame
+	*/
+	return this->compliance;
 }
 
